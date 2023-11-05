@@ -1,3 +1,7 @@
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.nio.ByteBuffer;
+
 public class Block {
 
   int blockCount;
@@ -7,24 +11,55 @@ public class Block {
   Hash hash;
 
   /**
-   * Creates a new block and computes the nonce and hash.
+   * Constructs a new block and computes the nonce and hash.
    */
-  public Block(int blockCount, int amount, Hash previousHash) {
+  public Block(int blockCount, int amount, Hash previousHash) throws NoSuchAlgorithmException {
     this.blockCount = blockCount;
     this.amount = amount;
     this.previousHash = previousHash;
-    // TODO mine nonce, compute hash
-  }
+    findNonce();
+  } // Block(int blockCount, int amount, Hash previousHash)
+
   /**
-   * Creates a new block and computes the hash given the nonce.
+   * Constructs a new block and computes the hash given the nonce.
    */
-  public Block(int blockCount, int amount, Hash previousHash, long nonce) {
+  public Block(int blockCount, int amount, Hash previousHash, long nonce) throws NoSuchAlgorithmException {
     this.blockCount = blockCount;
     this.amount = amount;
     this.previousHash = previousHash;
     this.nonce = nonce;
-    // TODO compute hash
-  }
+    this.hash = computeHash(nonce);
+  } // Block(int blockCount, int amount, Hash previousHash, long nonce)
+
+  /**
+   * Hashes fields of block using provided nonce.
+   */
+  private Hash computeHash(long nonce) throws NoSuchAlgorithmException {
+    MessageDigest md = MessageDigest.getInstance("sha-256");
+    ByteBuffer block = ByteBuffer.allocate(4);
+    block.putInt(this.blockCount);
+    block.putInt(this.amount);
+    if (this.blockCount != 0) {
+      block.put(this.previousHash.getData());
+    }
+    block.putLong(nonce);
+    md.update(block.array());
+    byte[] hashValue = md.digest();
+    return new Hash(hashValue);
+  } // computeHash(long nonce)
+
+  /**
+   * Finds a valid nonce and then sets the hash.
+   */
+  private void findNonce() throws NoSuchAlgorithmException {
+    Hash hash;
+    int nonce = 0;
+    do {
+      hash = computeHash(nonce++);
+    } while (!hash.isValid());
+    this.nonce = nonce;
+    this.hash = hash;
+  } // computeHash(long nonce)
 
   /**
    * @return blockCount
