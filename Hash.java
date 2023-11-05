@@ -1,24 +1,48 @@
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * Hash object. Allows creating and comparing hashes.
+ * @author Tyrell
+ * @author Reed
+ */
+
+
 //Hash Class
 public class Hash{
+
+  // hash value
   byte[] data;
+
+  /**
+   * Constructs a new Hash object that contains the given hash (as an array of bytes).
+   */
   public static byte[] Hash(String msg) throws NoSuchAlgorithmException {
     MessageDigest md = MessageDigest.getInstance("sha-256");
     md.update(msg.getBytes());
     byte[] hash = md.digest();
     this.data = hash;
-} // calculateHash(String)
+  } // calculateHash(String)
+
+  /**
+   * Returns the hash contained in this object.
+   */
+  byte[] getData() {
+    return data;
+  } // byte[] getData()
+
+  /**
+   * Returns true if this hash is structurally equal to the argument.
+   */
+  boolean equals(Object other) {
+    return this.toString().equals(other.toString());
+  } // boolean equals(Object other)
+
 }
 
-/*While a hash is a byte array, it is convenient to write a wrapper class that wraps up a byte array along with some operations we would like to perform on it. Write a class called Hash with the following public methods:
-
-Hash(byte[] data): constructs a new Hash object that contains the given hash (as an array of bytes).
-byte[] getData(): returns the hash contained in this object.
+//
 boolean isValid(): returns true if this hash meets the criteria for validity, i.e., its first three indices contain zeroes.
 String toString(): returns the string representation of the hash as a string of hexadecimal digits, 2 digits per byte.
-boolean equals(Object other): returns true if this hash is structurally equal to the argument.
 To implement toString(), you will find the following static methods useful:
 
 Byte.toUnsignedInt
