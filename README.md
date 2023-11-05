@@ -10,4 +10,4 @@ Description: A Java implementation of a basic blockchain.
 
 Additional resources:
 
-    - https://docs.oracle.com/javase/tutorial/java/data/converting.html
+    - https://docs.oracle.com/javase
