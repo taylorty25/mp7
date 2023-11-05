@@ -46,7 +46,7 @@ public class Block {
     md.update(block.array());
     byte[] hashValue = md.digest();
     return new Hash(hashValue);
-  } // computeHash(long nonce)
+  } // computeHash
 
   /**
    * Finds a valid nonce and then sets the hash.
@@ -59,7 +59,7 @@ public class Block {
     } while (!hash.isValid());
     this.nonce = nonce;
     this.hash = hash;
-  } // computeHash(long nonce)
+  } // findNonce()
 
   /**
    * @return blockCount
