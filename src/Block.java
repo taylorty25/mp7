@@ -27,36 +27,48 @@ public class Block {
   }
 
   /**
-   * @return blockCount.
+   * @return blockCount
    */
   public int getNum() {
     return blockCount;
   }
 
   /**
-   * @return amount.
+   * @return amount
    */
   public int getAmount() {
     return amount;
-  }
+  } // getAmount()
 
   /**
-   * @return nonce.
+   * @return nonce
    */
   public long getNonce() {
     return nonce;
-  }
-}
+  } // getNonce()
 
-/**
- Hash getPrevHash(): returns the hash of the previous block in the blockchain.
- Hash getHash(): returns the hash of this block.
- String toString(): returns a string representation of the block (see below).
-    The string representation of a Block should be formatted as follows
-    (filling in values for the things in angle brackets):
-    be different depending on the order in which you hash values.
-    For consistency’s sake with our testing suite,
-    ensure that you update the MessageDigest object in the order specified above.
-    For the first block, you should not hash anything for the previous hash value (step 3).
-    Furthermore, you should also search the space of nonces by searching all possible longs in increasing order starting at zero.
- **/
+  /**
+   * @return previousHash
+   */
+  public Hash getPrevHash() {
+    return this.previousHash;
+  } // getPrevHash()
+  /**
+   * @return hash
+   */
+  public Hash getHash() {
+    return this.hash;
+  } // getHash()
+
+ /**
+  * @return a string representation of the block.
+  */
+  public String toString() {
+    String representation = "Block " + this.blockCount + " ";
+    representation += "(Amount: " + this.amount + ", ";
+    representation += "Nonce: " + this.nonce + ", ";
+    representation += "prevHash: " + this.previousHash + ", ";
+    representation += "hash: " + this.hash + ")";
+    return representation;
+  } // toString()
+}
