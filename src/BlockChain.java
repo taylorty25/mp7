@@ -77,14 +77,22 @@ public class BlockChain {
     boolean validChain = block.getPrevHash().equals(this.last.block.getHash());
     // New index value should be equal to current size
     boolean validSize = block.getNum() == getSize();
-    // TODO: make sure they have enough funds
     return validHash && validChain && validSize;
+  } // isValidBlock(Block block)
+
+  /**
+   * Makes sure senders balance is sufficient.
+   */
+  private boolean enoughBalance(int amount) {
+    // TODO: make sure they have enough funds
+    return false;
   } // isValidBlock(Block block)
 
   /**
    * Walks the blockchain and ensures that its blocks are consistent and valid.
    */
   boolean isValidBlockChain() {
+
     Node cursor = this.last;
     while (cursor != null) {
       if (!isValidBlock(cursor.block)) {
@@ -96,10 +104,7 @@ public class BlockChain {
     return true;
   } // isValidBlockChain
 
-  /**
-   * Prints Alexis’s and Blake’s balances.
-   */
-  void printBalances() {
+  int[] balances() {
     Node cursor = this.last;
     int alexis = 0;
     int blake = 0;
@@ -108,8 +113,16 @@ public class BlockChain {
       blake -= cursor.block.getAmount();
       cursor = cursor.previousNode;
     } // while
+    return new int[]{alexis, blake};
+  }
+
+  /**
+   * Prints Alexis’s and Blake’s balances.
+   */
+  void printBalances() {
     PrintWriter pen = new PrintWriter(System.out,true);
-    pen.println("Alexis: " + alexis + ", Blake: " + blake);
+    int[] balances = balances();
+    pen.println("Alexis: " + balances[0] + ", Blake: " + balances[1]);
   }
 
   /**
@@ -132,6 +145,7 @@ public class BlockChain {
   private static class Node {
     Block block;
     Node previousNode;
+
 
     /**
      * Constructor for a Node
