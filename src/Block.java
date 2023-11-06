@@ -1,11 +1,12 @@
+import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.nio.ByteBuffer;
 
 
 /**
  * Stores the information for the block.
  * Methods available to compute the hash and nonce.
+ *
  * @author Reed
  * @author Tyrell
  */
@@ -19,8 +20,9 @@ public class Block {
 
   /**
    * Constructs a new block and computes the nonce and hash.
-   * @param blockCount index of block in blockchain
-   * @param amount transaction amount
+   *
+   * @param blockCount   index of block in blockchain
+   * @param amount       transaction amount
    * @param previousHash hash of the previous block
    * @throws NoSuchAlgorithmException if SHA-256 is not supported
    */
@@ -52,7 +54,7 @@ public class Block {
     block.putInt(this.amount);
     if (this.blockCount != 0) {
       block.put(this.previousHash.getData());
-    }
+    } // if
     block.putLong(nonce);
     md.update(block.array());
     byte[] hashValue = md.digest();
@@ -99,6 +101,7 @@ public class Block {
   public Hash getPrevHash() {
     return this.previousHash;
   } // getPrevHash()
+
   /**
    * @return hash
    */
@@ -106,9 +109,9 @@ public class Block {
     return this.hash;
   } // getHash()
 
- /**
-  * @return a string representation of the block.
-  */
+  /**
+   * @return a string representation of the block.
+   */
   public String toString() {
     String representation = "Block " + this.blockCount + " ";
     representation += "(Amount: " + this.amount + ", ";

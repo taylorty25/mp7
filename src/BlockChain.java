@@ -1,25 +1,25 @@
 import java.security.NoSuchAlgorithmException;
 
+
 /**
  * A blockchain of Blocks.
+ *
  * @author Reed
  * @author Tyrell
  */
 public class BlockChain {
-  private Node first;
+  private final Node first;
   private Node last;
-
 
   /**
    * Constructs a BlockChain with a starting block.
    *
    * @param initial transaction value for the first block
-   * */
+   */
   public BlockChain(int initial) throws NoSuchAlgorithmException {
     this.first = new Node(new Block(0, initial, null), null);
     this.last = first;
   } // BlockChain()
-
 
   /**
    * @ return A newly mined block
@@ -66,6 +66,7 @@ public class BlockChain {
   static class Node {
     Block block;
     Node previousNode;
+
     Node(Block block, Node previousNode) {
       this.block = block;
       this.previousNode = previousNode;
@@ -74,8 +75,8 @@ public class BlockChain {
 }
 
 /**
- void append(Block blk): adds this block to the list, throwing an IllegalArgumentException if this block cannot be added to the chain (because it is invalid with the rest of the blocks).
- boolean isValidBlockChain(): walks the blockchain and ensures that its blocks are consistent and valid.
- void printBalances(): prints Alexis’s and Blake’s respective balances in the form Alexis: <amt>, Blake: <amt> on a single line, e.g., Alexis: 300, Blake: 0.
- String toString(): returns a string representation of the BlockChain which is simply the string representation of each of its blocks, earliest to latest, one per line.
+ * void append(Block blk): adds this block to the list, throwing an IllegalArgumentException if this block cannot be added to the chain (because it is invalid with the rest of the blocks).
+ * boolean isValidBlockChain(): walks the blockchain and ensures that its blocks are consistent and valid.
+ * void printBalances(): prints Alexis’s and Blake’s respective balances in the form Alexis: <amt>, Blake: <amt> on a single line, e.g., Alexis: 300, Blake: 0.
+ * String toString(): returns a string representation of the BlockChain which is simply the string representation of each of its blocks, earliest to latest, one per line.
  **/
