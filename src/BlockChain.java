@@ -59,6 +59,38 @@ public class BlockChain {
     } // if/else
   } // getSize
 
+  /**
+   * Adds the block to the list.
+   * @throws IllegalArgumentException if the block invalidates the chain.
+   */
+  void append(Block block) throws IllegalArgumentException {
+    boolean validHash = block.getHash().isValid();
+    boolean validChain = block.getPrevHash().equals(this.last.block.getHash());
+    // New index value should be equal to current size
+    boolean validSize = block.getNum() == getSize();
+    if (validHash && validChain && validSize) {
+      this.last = new Node(block, this.last);
+    } else {
+      throw new IllegalArgumentException();
+    } // if/else
+  } // append(Block block)
+
+
+  /**
+   * returns a string representation of the BlockChain
+   * which is simply the string representation of each of its blocks,
+   * earliest to latest, one per line.
+   */
+  public String toString() {
+    Node cursor = this.last;
+    StringBuilder blocks = new StringBuilder();
+    while (cursor != null) {
+      blocks.append(cursor.block.toString());
+      cursor = cursor.previousNode;
+    } // while
+    return blocks.toString();
+  } // toString()
+
 
   /**
    * Node for BlockChain's singly linked list.
@@ -67,16 +99,17 @@ public class BlockChain {
     Block block;
     Node previousNode;
 
+    /**
+     * Constructor for a Node
+     */
     Node(Block block, Node previousNode) {
       this.block = block;
       this.previousNode = previousNode;
     } // Node
-  }
+  } // class Node
 }
 
 /**
- * void append(Block blk): adds this block to the list, throwing an IllegalArgumentException if this block cannot be added to the chain (because it is invalid with the rest of the blocks).
  * boolean isValidBlockChain(): walks the blockchain and ensures that its blocks are consistent and valid.
  * void printBalances(): prints Alexis’s and Blake’s respective balances in the form Alexis: <amt>, Blake: <amt> on a single line, e.g., Alexis: 300, Blake: 0.
- * String toString(): returns a string representation of the BlockChain which is simply the string representation of each of its blocks, earliest to latest, one per line.
  **/
