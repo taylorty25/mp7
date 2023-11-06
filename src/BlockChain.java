@@ -1,6 +1,3 @@
-import java.security.NoSuchAlgorithmException;
-
-
 /**
  * A blockchain of Blocks.
  *
@@ -16,7 +13,7 @@ public class BlockChain {
    *
    * @param initial transaction value for the first block
    */
-  public BlockChain(int initial) throws NoSuchAlgorithmException {
+  public BlockChain(int initial) {
     this.first = new Node(new Block(0, initial, null), null);
     this.last = first;
   } // BlockChain()
@@ -24,7 +21,7 @@ public class BlockChain {
   /**
    * @ return A newly mined block
    */
-  public Block mine(int amount) throws NoSuchAlgorithmException {
+  public Block mine(int amount) {
     return new Block(this.getSize(), amount, this.getHash());
   } // mine(int amount)
 
@@ -40,7 +37,7 @@ public class BlockChain {
   /**
    * @return the hash of the last block
    */
-  public Hash getHash() {
+  Hash getHash() {
     return this.last.block.getHash();
   } // getSize
 
@@ -50,7 +47,7 @@ public class BlockChain {
    * If the chain only contains a single block,
    * then removeLast does nothing and returns false.
    */
-  public boolean removeLast() {
+  boolean removeLast() {
     if (this.getSize() == 1) {
       this.last = this.last.previousNode;
       return true;
@@ -95,7 +92,7 @@ public class BlockChain {
   /**
    * Node for BlockChain's singly linked list.
    */
-  static class Node {
+  private static class Node {
     Block block;
     Node previousNode;
 

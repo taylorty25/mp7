@@ -24,9 +24,8 @@ public class Block {
    * @param blockCount   index of block in blockchain
    * @param amount       transaction amount
    * @param previousHash hash of the previous block
-   * @throws NoSuchAlgorithmException if SHA-256 is not supported
    */
-  public Block(int blockCount, int amount, Hash previousHash) throws NoSuchAlgorithmException {
+  Block(int blockCount, int amount, Hash previousHash) {
     this.blockCount = blockCount;
     this.amount = amount;
     this.previousHash = previousHash;
@@ -36,7 +35,7 @@ public class Block {
   /**
    * Constructs a new block and computes the hash given the nonce.
    */
-  public Block(int blockCount, int amount, Hash previousHash, long nonce) throws NoSuchAlgorithmException {
+  Block(int blockCount, int amount, Hash previousHash, long nonce) {
     this.blockCount = blockCount;
     this.amount = amount;
     this.previousHash = previousHash;
@@ -47,8 +46,13 @@ public class Block {
   /**
    * Hashes fields of block using provided nonce.
    */
-  private Hash computeHash(long nonce) throws NoSuchAlgorithmException {
-    MessageDigest md = MessageDigest.getInstance("sha-256");
+  private Hash computeHash(long nonce) {
+    MessageDigest md;
+    try {
+      md = MessageDigest.getInstance("sha-256");
+    } catch (NoSuchAlgorithmException e) {
+      throw new RuntimeException(e);
+    } // try/catch
     ByteBuffer block = ByteBuffer.allocate(4);
     block.putInt(this.blockCount);
     block.putInt(this.amount);
@@ -64,7 +68,7 @@ public class Block {
   /**
    * Finds a valid nonce and then sets the hash.
    */
-  private void findNonce() throws NoSuchAlgorithmException {
+  private void findNonce() {
     Hash hash;
     int nonce = 0;
     do {
@@ -77,35 +81,35 @@ public class Block {
   /**
    * @return blockCount
    */
-  public int getNum() {
+  int getNum() {
     return blockCount;
   }
 
   /**
    * @return amount
    */
-  public int getAmount() {
+  int getAmount() {
     return amount;
   } // getAmount()
 
   /**
    * @return nonce
    */
-  public long getNonce() {
+  long getNonce() {
     return nonce;
   } // getNonce()
 
   /**
    * @return previousHash
    */
-  public Hash getPrevHash() {
+  Hash getPrevHash() {
     return this.previousHash;
   } // getPrevHash()
 
   /**
    * @return hash
    */
-  public Hash getHash() {
+  Hash getHash() {
     return this.hash;
   } // getHash()
 
