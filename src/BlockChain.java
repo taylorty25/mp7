@@ -1,3 +1,5 @@
+import java.io.PrintWriter;
+
 /**
  * A blockchain of Blocks.
  *
@@ -5,7 +7,6 @@
  * @author Tyrell
  */
 public class BlockChain {
-  private final Node first;
   private Node last;
 
   /**
@@ -14,8 +15,7 @@ public class BlockChain {
    * @param initial transaction value for the first block
    */
   public BlockChain(int initial) {
-    this.first = new Node(new Block(0, initial, null), null);
-    this.last = first;
+    this.last = new Node(new Block(0, initial, null), null);
   } // BlockChain()
 
   /**
@@ -37,7 +37,7 @@ public class BlockChain {
   /**
    * @return the hash of the last block
    */
-  Hash getHash() {
+  private Hash getHash() {
     return this.last.block.getHash();
   } // getSize
 
@@ -58,25 +58,62 @@ public class BlockChain {
 
   /**
    * Adds the block to the list.
+   *
    * @throws IllegalArgumentException if the block invalidates the chain.
    */
-  void append(Block block) throws IllegalArgumentException {
-    boolean validHash = block.getHash().isValid();
-    boolean validChain = block.getPrevHash().equals(this.last.block.getHash());
-    // New index value should be equal to current size
-    boolean validSize = block.getNum() == getSize();
-    if (validHash && validChain && validSize) {
+  void append(Block block) {
+    if (isValidBlock(block)) {
       this.last = new Node(block, this.last);
     } else {
       throw new IllegalArgumentException();
     } // if/else
   } // append(Block block)
 
+  /**
+   * Tests validity of block.
+   */
+  private boolean isValidBlock(Block block) {
+    boolean validHash = block.getHash().isValid();
+    boolean validChain = block.getPrevHash().equals(this.last.block.getHash());
+    // New index value should be equal to current size
+    boolean validSize = block.getNum() == getSize();
+    // TODO: make sure they have enough funds
+    return validHash && validChain && validSize;
+  } // isValidBlock(Block block)
 
   /**
-   * returns a string representation of the BlockChain
-   * which is simply the string representation of each of its blocks,
-   * earliest to latest, one per line.
+   * Walks the blockchain and ensures that its blocks are consistent and valid.
+   */
+  boolean isValidBlockChain() {
+    Node cursor = this.last;
+    while (cursor != null) {
+      if (!isValidBlock(cursor.block)) {
+        return false;
+      } else {
+        cursor = cursor.previousNode;
+      } // if/else
+    } // while
+    return true;
+  } // isValidBlockChain
+
+  /**
+   * Prints Alexis’s and Blake’s balances.
+   */
+  void printBalances() {
+    Node cursor = this.last;
+    int alexis = 0;
+    int blake = 0;
+    while (cursor != null) {
+      alexis += cursor.block.getAmount();
+      blake -= cursor.block.getAmount();
+      cursor = cursor.previousNode;
+    } // while
+    PrintWriter pen = new PrintWriter(System.out,true);
+    pen.println("Alexis: " + alexis + ", Blake: " + blake);
+  }
+
+  /**
+   * Returns a string representation of each block on the BlockChain.
    */
   public String toString() {
     Node cursor = this.last;
@@ -105,8 +142,3 @@ public class BlockChain {
     } // Node
   } // class Node
 }
-
-/**
- * boolean isValidBlockChain(): walks the blockchain and ensures that its blocks are consistent and valid.
- * void printBalances(): prints Alexis’s and Blake’s respective balances in the form Alexis: <amt>, Blake: <amt> on a single line, e.g., Alexis: 300, Blake: 0.
- **/
