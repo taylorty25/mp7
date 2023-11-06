@@ -2,16 +2,27 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.nio.ByteBuffer;
 
+
+/**
+ * Stores the information for the block.
+ * Methods available to compute the hash and nonce.
+ * @author Reed
+ * @author Tyrell
+ */
 public class Block {
 
-  int blockCount;
-  int amount;
-  Hash previousHash;
-  long nonce;
-  Hash hash;
+  private final int blockCount;
+  private final int amount;
+  private final Hash previousHash;
+  private long nonce;
+  private Hash hash;
 
   /**
    * Constructs a new block and computes the nonce and hash.
+   * @param blockCount index of block in blockchain
+   * @param amount transaction amount
+   * @param previousHash hash of the previous block
+   * @throws NoSuchAlgorithmException if SHA-256 is not supported
    */
   public Block(int blockCount, int amount, Hash previousHash) throws NoSuchAlgorithmException {
     this.blockCount = blockCount;

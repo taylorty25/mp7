@@ -1,12 +1,17 @@
 import java.util.Arrays;
 
-// Hash Class
+/**
+ * Stores hash value.
+ * @author Tyrell
+ * @author Reed
+ */
 public class Hash {
-  byte[] data;
+  private final byte[] data;
   /**
    * constructs a new Hash object that contains the given hash (as an array of bytes).
+   * @param data hash value
    */
-  public Hash(byte[] data) {
+  Hash(byte[] data) {
     this.data = data;
   }// calculateHash(String)
 
@@ -20,7 +25,7 @@ public class Hash {
   /**
    * Returns true if this hash meets the criteria for validity, i.e., its first three indices contain zeroes.
    */
-  public boolean isValid(){
+  boolean isValid(){
     return data[0] == 0 && data[1] == 0 && data[2] == 0;
   }
   /**
