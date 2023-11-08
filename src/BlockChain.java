@@ -15,7 +15,7 @@ public class BlockChain {
    *
    * @param initial transaction value for the first block
    */
-  public BlockChain(int initial) {
+  BlockChain(int initial) {
     this.first = new Node(
             new Block(0, initial, null),
             null, null);
@@ -25,10 +25,9 @@ public class BlockChain {
   /**
    * @ return A newly mined block
    */
-  public Block mine(int amount) {
+  Block mine(int amount) {
     return new Block(this.getSize(), amount, this.getHash());
   } // mine(int amount)
-
 
   /**
    * @return the length of the blockchain
@@ -36,7 +35,6 @@ public class BlockChain {
   private int getSize() {
     return this.last.block.getNum() + 1;
   } // getSize
-
 
   /**
    * @return the hash of the last block
@@ -171,7 +169,6 @@ public class BlockChain {
       this.block = block;
       this.previousNode = previousNode;
       this.nextNode = nextNode;
-    }
-
-  }
-}
+    } // Node
+  } // class Node
+} // class BlockChain
