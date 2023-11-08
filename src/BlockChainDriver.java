@@ -27,5 +27,8 @@ public class BlockChainDriver {
         input = scanner.nextLine();
         // TODO: logic to call functions and possibly initialize blockChain with initial value
       } while (!input.contains("quit"));
+      pen.println("BlockChain simulation quit");
+      pen.close();
+      scanner.close();
   } // main()
 } // class BlockChainDriver

@@ -62,7 +62,7 @@ public class BlockChain {
    * @throws IllegalArgumentException if the block invalidates the chain.
    */
   void append(Block block) {
-    if (isValidBlock(block)) {
+    if (isValidBlock(block) && enoughBalance(block.getAmount())) {
       this.last = new Node(block, this.last);
     } else {
       throw new IllegalArgumentException();
@@ -74,25 +74,38 @@ public class BlockChain {
    */
   private boolean isValidBlock(Block block) {
     boolean validHash = block.getHash().isValid();
-    boolean validChain = block.getPrevHash().equals(this.last.block.getHash());
-    // New index value should be equal to current size
+    boolean validPrevious = block.getPrevHash().equals(this.last.block.getHash());
     boolean validSize = block.getNum() == getSize();
-    return validHash && validChain && validSize;
+    boolean validAmount = enoughBalance(block.getAmount());
+    return validHash && validPrevious && validSize && validAmount;
   } // isValidBlock(Block block)
 
   /**
-   * Makes sure senders balance is sufficient.
+   * Makes sure sender's balance is sufficient.
+   * Note: This also returns false if a negative balance existed in any previous state.
    */
   private boolean enoughBalance(int amount) {
-    // TODO: make sure they have enough funds
-    return false;
+    Node cursor = this.last;
+    while (cursor.previousNode != null) {
+      amount += cursor.block.getAmount();
+      if (amount < 0) {
+        return false;
+      } else {
+        cursor = cursor.previousNode;
+      } // if/else
+    } // while
+    // Check that the starting balance is greater than the total cash transferred
+    //   the total should always be negative, and the total should always be less than
+    //   the inverse of the starting balance.
+    int startingBalance = cursor.block.getAmount();
+    return -startingBalance >= amount && amount <= 0;
+    // TODO: make sure that at each block, the rest of the blockchain is valid
   } // isValidBlock(Block block)
 
   /**
    * Walks the blockchain and ensures that its blocks are consistent and valid.
    */
   boolean isValidBlockChain() {
-
     Node cursor = this.last;
     while (cursor != null) {
       if (!isValidBlock(cursor.block)) {
@@ -101,10 +114,10 @@ public class BlockChain {
         cursor = cursor.previousNode;
       } // if/else
     } // while
-    return true;
+    return enoughBalance(0);
   } // isValidBlockChain
 
-  int[] balances() {
+  private int[] balances() {
     Node cursor = this.last;
     int alexis = 0;
     int blake = 0;
@@ -120,7 +133,7 @@ public class BlockChain {
    * Prints Alexis’s and Blake’s balances.
    */
   void printBalances() {
-    PrintWriter pen = new PrintWriter(System.out,true);
+    PrintWriter pen = new PrintWriter(System.out, true);
     int[] balances = balances();
     pen.println("Alexis: " + balances[0] + ", Blake: " + balances[1]);
   }
@@ -138,21 +151,9 @@ public class BlockChain {
     return blocks.toString();
   } // toString()
 
-
   /**
-   * Node for BlockChain's singly linked list.
+   * Node record for BlockChain's singly linked list.
    */
-  private static class Node {
-    Block block;
-    Node previousNode;
-
-
-    /**
-     * Constructor for a Node
-     */
-    Node(Block block, Node previousNode) {
-      this.block = block;
-      this.previousNode = previousNode;
-    } // Node
-  } // class Node
+  private record Node(Block block, BlockChain.Node previousNode) {
+  }
 }
