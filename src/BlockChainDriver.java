@@ -27,5 +27,5 @@ public class BlockChainDriver {
         input = scanner.nextLine();
         // TODO: logic to call functions and possibly initialize blockChain with initial value
       } while (!input.contains("quit"));
-  }
-}
+  } // main()
+} // class BlockChainDriver
