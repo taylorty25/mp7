@@ -7,6 +7,7 @@ import java.io.PrintWriter;
  * @author Tyrell
  */
 public class BlockChain {
+  private final Node first;
   private Node last;
 
   /**
@@ -15,7 +16,10 @@ public class BlockChain {
    * @param initial transaction value for the first block
    */
   public BlockChain(int initial) {
-    this.last = new Node(new Block(0, initial, null), null);
+    this.first = new Node(
+            new Block(0, initial, null),
+            null, null);
+    this.last = this.first;
   } // BlockChain()
 
   /**
@@ -63,7 +67,8 @@ public class BlockChain {
    */
   void append(Block block) {
     if (isValidBlock(block) && enoughBalance(block.getAmount())) {
-      this.last = new Node(block, this.last);
+      this.last.nextNode = new Node(block, this.last, null);
+      this.last = this.last.nextNode;
     } else {
       throw new IllegalArgumentException();
     } // if/else
@@ -85,21 +90,21 @@ public class BlockChain {
    * Note: This also returns false if a negative balance existed in any previous state.
    */
   private boolean enoughBalance(int amount) {
-    Node cursor = this.last;
-    while (cursor.previousNode != null) {
-      amount += cursor.block.getAmount();
-      if (amount < 0) {
+    int startingBalance = this.first.block.getAmount();
+    int total = 0;
+    Node cursor = this.first.nextNode;
+    while (cursor != null) {
+      total += cursor.block.getAmount();
+      if (total < -startingBalance || total > 0) {
+        // Check that the starting balance is greater than the total cash transferred
+        //   the total should always be negative, and the total should always be less than
+        //   the inverse of the starting balance.
         return false;
-      } else {
-        cursor = cursor.previousNode;
-      } // if/else
+      } // if
+      cursor = cursor.nextNode;
     } // while
-    // Check that the starting balance is greater than the total cash transferred
-    //   the total should always be negative, and the total should always be less than
-    //   the inverse of the starting balance.
-    int startingBalance = cursor.block.getAmount();
-    return -startingBalance >= amount && amount <= 0;
-    // TODO: make sure that at each block, the rest of the blockchain is valid
+    total += amount;
+    return total >= -startingBalance && total <= 0;
   } // isValidBlock(Block block)
 
   /**
@@ -152,8 +157,21 @@ public class BlockChain {
   } // toString()
 
   /**
-   * Node record for BlockChain's singly linked list.
+   * Node record for BlockChain's doubly linked list.
    */
-  private record Node(Block block, BlockChain.Node previousNode) {
+  private static final class Node {
+    private final Block block;
+    private final Node previousNode;
+    private Node nextNode;
+
+    /**
+     * Node constructor.
+     */
+    Node(Block block, Node previousNode, Node nextNode) {
+      this.block = block;
+      this.previousNode = previousNode;
+      this.nextNode = nextNode;
+    }
+
   }
 }
