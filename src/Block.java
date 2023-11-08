@@ -29,7 +29,7 @@ public class Block {
     this.blockCount = blockCount;
     this.amount = amount;
     this.previousHash = previousHash;
-    findNonce();
+    computeHash();
   } // Block(int blockCount, int amount, Hash previousHash)
 
   /**
@@ -39,44 +39,38 @@ public class Block {
     this.blockCount = blockCount;
     this.amount = amount;
     this.previousHash = previousHash;
+    this.hash = computeHash();
     this.nonce = nonce;
-    this.hash = computeHash(nonce);
   } // Block(int blockCount, int amount, Hash previousHash, long nonce)
 
   /**
    * Hashes fields of block using provided nonce.
    */
-  private Hash computeHash(long nonce) {
+  private Hash computeHash() {
     MessageDigest md;
     try {
       md = MessageDigest.getInstance("sha-256");
     } catch (NoSuchAlgorithmException e) {
       throw new RuntimeException(e);
     } // try/catch
-    ByteBuffer block = ByteBuffer.allocate(4);
-    block.putInt(this.blockCount);
-    block.putInt(this.amount);
-    if (this.blockCount != 0) {
-      block.put(this.previousHash.getData());
-    } // if
-    block.putLong(nonce);
-    md.update(block.array());
-    byte[] hashValue = md.digest();
-    return new Hash(hashValue);
-  } // computeHash
-
-  /**
-   * Finds a valid nonce and then sets the hash.
-   */
-  private void findNonce() {
+    ByteBuffer block = ByteBuffer.allocate(1000);
     Hash hash;
     int nonce = 0;
     do {
-      hash = computeHash(nonce++);
+      block = block.putInt(this.blockCount);
+      block = block.putInt(this.amount);
+      if (this.blockCount != 0) {
+        block = block.put(this.previousHash.getData());
+      } // if
+      block = block.putLong(nonce++);
+      md.update(block.array());
+      byte[] hashValue = md.digest();
+      md.reset();
+      hash = new Hash(hashValue);
     } while (!hash.isValid());
     this.nonce = nonce;
-    this.hash = hash;
-  } // findNonce()
+    return hash;
+  } // computeHash
 
   /**
    * @return blockCount
