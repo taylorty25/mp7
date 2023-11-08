@@ -29,7 +29,7 @@ public class Hash {
    * Returns true if this hash meets the criteria for validity, i.e., its first three indices contain zeroes.
    */
   boolean isValid() {
-    return data[0] == 0 && data[1] == 0 && data[2] == 0;
+    return data[0] >> 5 == 0;
   } // isValid()
 
   /**
