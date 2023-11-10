@@ -46,16 +46,16 @@ public class Block {
    * Hashes fields of block using provided nonce.
    */
   private Hash computeHash() {
-    MessageDigest md;
-    try {
-      md = MessageDigest.getInstance("sha-256");
-    } catch (NoSuchAlgorithmException e) {
-      throw new RuntimeException(e);
-    } // try/catch
-    ByteBuffer block = ByteBuffer.allocate(48);
     Hash hash;
     int nonce = 0;
     do {
+      MessageDigest md;
+      try {
+        md = MessageDigest.getInstance("sha-256");
+      } catch (NoSuchAlgorithmException e) {
+        throw new RuntimeException(e);
+      } // try/catch
+      ByteBuffer block = ByteBuffer.allocate(48);
       block = block.putInt(this.blockCount);
       block = block.putInt(this.amount);
       if (this.blockCount != 0) {
@@ -63,8 +63,8 @@ public class Block {
       } // if
       block = block.putLong(nonce++);
       md.update(block.array());
+      int i = md.getDigestLength();
       byte[] hashValue = md.digest();
-      md.reset();
       hash = new Hash(hashValue);
     } while (!hash.isValid());
     this.nonce = nonce;
