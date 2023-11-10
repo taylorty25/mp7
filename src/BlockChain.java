@@ -148,10 +148,10 @@ public class BlockChain {
     Node cursor = this.last;
     StringBuilder blocks = new StringBuilder();
     while (cursor != null) {
-      blocks.append(cursor.block.toString());
+      blocks.append(cursor.block.toString()).append("\n");
       cursor = cursor.previousNode;
     } // while
-    return blocks.toString();
+    return blocks.toString().strip();
   } // toString()
 
   /**
