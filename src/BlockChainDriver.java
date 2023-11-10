@@ -31,7 +31,7 @@ public class BlockChainDriver {
                     help: prints this list of commands
                     quit: quits the program""");
         case "mine" -> {
-          pen.println("Amount transferred? ");
+          pen.printf("Amount transferred? ");
           int amount = scanner.nextInt();
           minedBlock = blockChain.mine(amount);
         } // case
@@ -49,12 +49,10 @@ public class BlockChainDriver {
             pen.println("Chain is invalid!");
           } // if/else
         } // case
-        case "remove" ->
-          blockChain.removeLast();
-        case "report" ->
-          blockChain.printBalances();
+        case "remove" -> blockChain.removeLast();
+        case "report" -> blockChain.printBalances();
       } // switch
-      pen.println(blockChain);
+      pen.println(blockChain + "\n");
     } while (!input.equals("quit"));
     pen.println("BlockChain simulation quit.");
     pen.close();
