@@ -16,7 +16,7 @@ public class Block {
   private final int amount;
   private final Hash previousHash;
   private long nonce;
-  private Hash hash;
+  private final Hash hash;
 
   /**
    * Constructs a new block and computes the nonce and hash.
@@ -29,7 +29,7 @@ public class Block {
     this.blockCount = blockCount;
     this.amount = amount;
     this.previousHash = previousHash;
-    computeHash();
+    this.hash = computeHash();
   } // Block(int blockCount, int amount, Hash previousHash)
 
   /**
@@ -40,7 +40,6 @@ public class Block {
     this.amount = amount;
     this.previousHash = previousHash;
     this.hash = computeHash();
-    this.nonce = nonce;
   } // Block(int blockCount, int amount, Hash previousHash, long nonce)
 
   /**
@@ -53,7 +52,7 @@ public class Block {
     } catch (NoSuchAlgorithmException e) {
       throw new RuntimeException(e);
     } // try/catch
-    ByteBuffer block = ByteBuffer.allocate(1000);
+    ByteBuffer block = ByteBuffer.allocate(48);
     Hash hash;
     int nonce = 0;
     do {
